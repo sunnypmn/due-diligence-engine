@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Validate.ai — AI-Powered Startup Due Diligence",
+  title: "Validate.ai: AI-Powered Startup Due Diligence",
   description:
     "Get a scored investment memo for any startup idea in under 2 minutes. Powered by real-time web research and Claude AI.",
 };

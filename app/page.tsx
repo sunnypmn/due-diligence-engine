@@ -144,7 +144,7 @@ export default function Home() {
               </h1>
               <p className="text-lg text-gray-500 max-w-xl mx-auto">
                 Paste your startup idea. Get a scored investment memo with
-                competitor analysis, TAM estimate, and execution risk — backed by
+                competitor analysis, TAM estimate, and execution risk, backed by
                 real search data.
               </p>
 
@@ -203,7 +203,7 @@ export default function Home() {
 
       {!showResults && (
         <footer className="mt-16 pb-8 text-center text-xs text-gray-400">
-          Validate.ai — AI-powered startup due diligence
+          Validate.ai · AI-powered startup due diligence
         </footer>
       )}
     </div>

@@ -75,7 +75,7 @@ export default function BusinessPlanUpsell({ input, score }: BusinessPlanUpsellP
         </h2>
         <p className="text-sm text-purple-200 mb-5 leading-relaxed">
           Claude AI uses your validation data to generate a 6-section investor-ready
-          plan — emailed to you in under 60 seconds.
+          plan, emailed to you in under 60 seconds.
         </p>
 
         {/* Email + CTA */}
@@ -103,7 +103,7 @@ export default function BusinessPlanUpsell({ input, score }: BusinessPlanUpsellP
                 Redirecting...
               </span>
             ) : (
-              "Get Business Plan — $99"
+              "Get Business Plan · $99"
             )}
           </button>
         </div>
@@ -176,7 +176,7 @@ export function StickyUpsellBar({ input, score }: { input: UserInput; score: Fin
               className="flex-shrink-0 px-4 py-2 rounded-lg font-bold text-xs text-white disabled:opacity-60 whitespace-nowrap"
               style={{ background: "linear-gradient(135deg, #a855f7, #9333ea)" }}
             >
-              {loading ? "..." : "Get Plan — $99"}
+              {loading ? "..." : "Get Plan · $99"}
             </button>
           </div>
 
