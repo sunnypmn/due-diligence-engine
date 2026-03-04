@@ -3,7 +3,7 @@ import type { UserInput } from "../lib/schemas/input";
 import ScoreCard from "./ScoreCard";
 import ModuleCard from "./ModuleCard";
 import MemoView from "./MemoView";
-import BusinessPlanUpsell from "./BusinessPlanUpsell";
+import BusinessPlanUpsell, { StickyUpsellBar } from "./BusinessPlanUpsell";
 
 interface ResultsViewProps {
   ideaName: string;
@@ -22,6 +22,24 @@ function Skeleton({ className }: { className?: string }) {
   );
 }
 
+// Memo with a gradient fade at the bottom to tease locked content
+function MemoTeaser({ memo }: { memo: string }) {
+  return (
+    <div className="relative">
+      <div className="card p-6 sm:p-8" style={{ maxHeight: "340px", overflow: "hidden" }}>
+        <MemoView memo={memo} />
+      </div>
+      {/* Gradient blur fade */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-40 flex flex-col items-center justify-end pb-5 rounded-b-2xl"
+        style={{ background: "linear-gradient(to bottom, transparent 0%, #f8f9fc 70%)" }}
+      >
+        <p className="text-xs text-gray-400">Continued in your business plan</p>
+      </div>
+    </div>
+  );
+}
+
 export default function ResultsView({
   ideaName,
   input,
@@ -35,80 +53,87 @@ export default function ResultsView({
   const totalExpected = 5;
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Validation Report</h1>
-          <p className="text-sm text-gray-400 mt-0.5">
-            {isStreaming ? (
-              <span className="inline-flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
-                Analyzing{modules.length > 0 ? ` · ${modules.length}/${totalExpected} modules done` : "..."}
-              </span>
-            ) : generatedAt ? (
-              new Date(generatedAt).toLocaleString()
-            ) : null}
-          </p>
+    <>
+      <div className="space-y-6 max-w-5xl mx-auto pb-24">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Validation Report</h1>
+            <p className="text-sm text-gray-400 mt-0.5">
+              {isStreaming ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+                  Analyzing{modules.length > 0 ? ` · ${modules.length}/${totalExpected} modules done` : "..."}
+                </span>
+              ) : generatedAt ? (
+                new Date(generatedAt).toLocaleString()
+              ) : null}
+            </p>
+          </div>
+          {!isStreaming && (
+            <button
+              onClick={onReset}
+              className="text-sm font-medium text-purple-600 hover:text-purple-800 px-4 py-2 rounded-lg bg-purple-50 hover:bg-purple-100 transition-colors"
+            >
+              New idea
+            </button>
+          )}
         </div>
+
+        {/* 1. Score card */}
+        {score ? (
+          <ScoreCard score={score} ideaName={ideaName} />
+        ) : (
+          <Skeleton className="h-40" />
+        )}
+
+        {/* 2. Upsell — right after score, before user digs into details */}
+        {!isStreaming && score && (
+          <BusinessPlanUpsell input={input} score={score} />
+        )}
+
+        {/* 3. Module cards */}
+        <div>
+          <h2 className="text-base font-semibold text-gray-900 mb-3">Module Breakdown</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {modules.map((module, i) => (
+              <ModuleCard key={i} module={module} />
+            ))}
+            {isStreaming &&
+              Array.from({ length: totalExpected - modules.length }).map((_, i) => (
+                <Skeleton key={`skel-${i}`} className="h-52" />
+              ))}
+          </div>
+        </div>
+
+        {/* 4. Memo — teased with gradient fade when complete */}
+        {memo ? (
+          <MemoTeaser memo={memo} />
+        ) : (
+          <div className="card p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-1 h-5 rounded-full bg-gray-200" />
+              <div className="h-4 w-32 bg-gray-100 rounded animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className={`h-3 bg-gray-100 rounded animate-pulse ${i % 3 === 2 ? "w-2/3" : "w-full"}`} />
+              ))}
+            </div>
+          </div>
+        )}
+
         {!isStreaming && (
-          <button
-            onClick={onReset}
-            className="text-sm font-medium text-purple-600 hover:text-purple-800 px-4 py-2 rounded-lg bg-purple-50 hover:bg-purple-100 transition-colors"
-          >
-            New idea
-          </button>
+          <div className="text-xs text-gray-400 text-center">
+            Generated by Validate.ai
+          </div>
         )}
       </div>
 
-      {/* Score card — skeleton while streaming */}
-      {score ? (
-        <ScoreCard score={score} ideaName={ideaName} />
-      ) : (
-        <Skeleton className="h-40" />
-      )}
-
-      {/* Module cards — appear as they stream in */}
-      <div>
-        <h2 className="text-base font-semibold text-gray-900 mb-3">Module Breakdown</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {modules.map((module, i) => (
-            <ModuleCard key={i} module={module} />
-          ))}
-          {/* Skeleton placeholders for pending modules */}
-          {isStreaming &&
-            Array.from({ length: totalExpected - modules.length }).map((_, i) => (
-              <Skeleton key={`skel-${i}`} className="h-52" />
-            ))}
-        </div>
-      </div>
-
-      {/* Memo — skeleton while generating */}
-      {memo ? (
-        <MemoView memo={memo} />
-      ) : (
-        <div className="card p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1 h-5 rounded-full bg-gray-200" />
-            <div className="h-4 w-32 bg-gray-100 rounded animate-pulse" />
-          </div>
-          <div className="space-y-2">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className={`h-3 bg-gray-100 rounded animate-pulse ${i % 3 === 2 ? "w-2/3" : "w-full"}`} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Upsell + footer — only when complete */}
+      {/* Sticky bar — always visible while scrolling */}
       {!isStreaming && score && (
-        <>
-          <BusinessPlanUpsell input={input} score={score} />
-          <div className="text-xs text-gray-400 text-center pb-8">
-            Generated by Validate.ai
-          </div>
-        </>
+        <StickyUpsellBar input={input} score={score} />
       )}
-    </div>
+    </>
   );
 }
