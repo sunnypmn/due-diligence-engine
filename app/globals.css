@@ -66,3 +66,54 @@ body {
   box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.12);
   background: #ffffff;
 }
+
+/* Loading screen animations */
+@keyframes orbit-ring {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes orbit-ring-reverse {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+@keyframes float-blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(18px, -14px) scale(1.06); }
+  66%      { transform: translate(-10px, 8px) scale(0.95); }
+}
+
+@keyframes shimmer-row {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes scan-pulse {
+  0%, 100% { opacity: 0.25; transform: scaleX(0.6); }
+  50%       { opacity: 1;    transform: scaleX(1); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.orbit-ring-cw  { animation: orbit-ring         3.5s linear infinite; }
+.orbit-ring-ccw { animation: orbit-ring-reverse  5s   linear infinite; }
+.float-blob     { animation: float-blob          6s   ease-in-out infinite; }
+
+.shimmer-row {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 0%,
+    rgba(168,85,247,0.18) 50%,
+    rgba(255,255,255,0.04) 100%);
+  background-size: 400px 100%;
+  animation: shimmer-row 1.6s ease-in-out infinite;
+}
+
+.scan-bar {
+  animation: scan-pulse 1.2s ease-in-out infinite;
+}
+
+.fade-up { animation: fade-up 0.4s ease-out both; }

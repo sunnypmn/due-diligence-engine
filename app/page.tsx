@@ -3,6 +3,7 @@
 import { useState } from "react";
 import InputForm from "../components/InputForm";
 import ResultsView from "../components/ResultsView";
+import LoadingScreen from "../components/LoadingScreen";
 import type { UserInput } from "../lib/schemas/input";
 import type { FinalScore, ModuleOutput } from "../lib/schemas/module";
 
@@ -180,7 +181,13 @@ export default function Home() {
           </>
         )}
 
-        {showResults && streamInput && (
+        {showResults && streamInput && streamModules.length === 0 && (
+          <div className="max-w-2xl mx-auto py-8">
+            <LoadingScreen completedModules={0} />
+          </div>
+        )}
+
+        {showResults && streamInput && streamModules.length > 0 && (
           <ResultsView
             ideaName={streamInput.idea_name}
             input={streamInput}
