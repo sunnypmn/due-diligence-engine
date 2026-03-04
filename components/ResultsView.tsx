@@ -2,7 +2,7 @@ import type { FinalScore, ModuleOutput } from "../lib/schemas/module";
 import type { UserInput } from "../lib/schemas/input";
 import ScoreCard from "./ScoreCard";
 import ModuleCard from "./ModuleCard";
-import MemoView from "./MemoView";
+import MemoTeaser from "./MemoTeaser";
 import BusinessPlanUpsell, { StickyUpsellBar } from "./BusinessPlanUpsell";
 
 interface ResultsViewProps {
@@ -22,23 +22,6 @@ function Skeleton({ className }: { className?: string }) {
   );
 }
 
-// Memo with a gradient fade at the bottom to tease locked content
-function MemoTeaser({ memo }: { memo: string }) {
-  return (
-    <div className="relative">
-      <div className="card p-6 sm:p-8" style={{ maxHeight: "340px", overflow: "hidden" }}>
-        <MemoView memo={memo} />
-      </div>
-      {/* Gradient blur fade */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-40 flex flex-col items-center justify-end pb-5 rounded-b-2xl"
-        style={{ background: "linear-gradient(to bottom, transparent 0%, #f8f9fc 70%)" }}
-      >
-        <p className="text-xs text-gray-400">Continued in your business plan</p>
-      </div>
-    </div>
-  );
-}
 
 export default function ResultsView({
   ideaName,
@@ -110,7 +93,7 @@ export default function ResultsView({
 
         {/* 4. Memo — teased with gradient fade when complete */}
         {memo ? (
-          <MemoTeaser memo={memo} />
+          <MemoTeaser memo={memo} input={input} score={score!} />
         ) : (
           <div className="card p-6">
             <div className="flex items-center gap-2 mb-4">
