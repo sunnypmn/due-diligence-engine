@@ -50,7 +50,6 @@ export async function POST(request: NextRequest) {
         budget_range: (input.budget_range || "").slice(0, 480),
         score_weighted: String(score.weighted_score),
         score_grade: score.grade,
-        score_letter: score.letter_grade,
       },
     });
 

@@ -39,7 +39,6 @@ export async function POST(request: NextRequest) {
     const score: FinalScore = {
       weighted_score: parseInt(m.score_weighted),
       grade: m.score_grade as FinalScore["grade"],
-      letter_grade: m.score_letter as FinalScore["letter_grade"],
       confidence: "Medium",
       risk_deduction: 0,
       top_reasons: [],

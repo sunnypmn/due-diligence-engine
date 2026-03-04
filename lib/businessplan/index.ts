@@ -22,7 +22,7 @@ export async function generateBusinessPlan(
 **PRICING:** ${input.planned_pricing || "TBD"}
 **TIMELINE:** ${input.timeline_months} months
 **BUDGET:** ${input.budget_range || "TBD"}
-**VALIDATION SCORE:** ${score.weighted_score}/100 (${score.grade}, Grade ${score.letter_grade})
+**VALIDATION SCORE:** ${score.weighted_score}/100 (${score.grade})
 
 Write the following sections in full detail:
 
