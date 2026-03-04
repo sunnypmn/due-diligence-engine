@@ -16,6 +16,14 @@ const SCORE_COLOR: Record<string, string> = {
   Pass:     "#ef4444",
 };
 
+const LETTER_COLORS: Record<string, string> = {
+  A: "text-emerald-600 bg-emerald-50 border-emerald-200",
+  B: "text-blue-600 bg-blue-50 border-blue-200",
+  C: "text-violet-600 bg-violet-50 border-violet-200",
+  D: "text-orange-600 bg-orange-50 border-orange-200",
+  F: "text-red-600 bg-red-50 border-red-200",
+};
+
 interface ScoreCardProps {
   score: FinalScore;
   ideaName: string;
@@ -25,16 +33,14 @@ function ScoreRing({ score, grade }: { score: number; grade: string }) {
   const r = 44;
   const circ = 2 * Math.PI * r;
   const fill = (score / 100) * circ;
-  const color = SCORE_COLOR[grade] ?? "#6366f1";
+  const color = SCORE_COLOR[grade] ?? "#9333ea";
 
   return (
     <div className="relative w-28 h-28 flex-shrink-0">
       <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r={r} fill="none" stroke="#f1f1f8" strokeWidth="8" />
         <circle
-          cx="50"
-          cy="50"
-          r={r}
+          cx="50" cy="50" r={r}
           fill="none"
           stroke={color}
           strokeWidth="8"
@@ -51,13 +57,26 @@ function ScoreRing({ score, grade }: { score: number; grade: string }) {
   );
 }
 
+function LetterGrade({ letter }: { letter: string }) {
+  const colors = LETTER_COLORS[letter] ?? LETTER_COLORS["F"];
+  return (
+    <div className={`flex-shrink-0 w-14 h-14 rounded-2xl border-2 flex items-center justify-center font-black text-3xl ${colors}`}>
+      {letter}
+    </div>
+  );
+}
+
 export default function ScoreCard({ score, ideaName }: ScoreCardProps) {
   const meta = GRADE_META[score.grade] ?? GRADE_META["Pass"];
 
   return (
     <div className="card p-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-        <ScoreRing score={score.weighted_score} grade={score.grade} />
+        {/* Score ring + letter grade side by side */}
+        <div className="flex items-center gap-4 flex-shrink-0">
+          <ScoreRing score={score.weighted_score} grade={score.grade} />
+          <LetterGrade letter={score.letter_grade} />
+        </div>
 
         <div className="flex-1 min-w-0">
           <h2 className="text-base font-semibold text-gray-900 mb-2 truncate">{ideaName}</h2>

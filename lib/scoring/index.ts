@@ -8,6 +8,14 @@ function getGrade(score: number): FinalScore["grade"] {
   return "Pass";
 }
 
+function getLetterGrade(score: number): FinalScore["letter_grade"] {
+  if (score >= 90) return "A";
+  if (score >= 80) return "B";
+  if (score >= 70) return "C";
+  if (score >= 60) return "D";
+  return "F";
+}
+
 function confidenceToNumber(c: Confidence): number {
   if (c === "High") return 3;
   if (c === "Medium") return 2;
@@ -50,6 +58,7 @@ export function computeScore(modules: ModuleOutput[]): FinalScore {
   return {
     weighted_score: weighted,
     grade: getGrade(weighted),
+    letter_grade: getLetterGrade(weighted),
     confidence,
     risk_deduction: Math.round(riskDeduction * 10) / 10,
     top_reasons,
