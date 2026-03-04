@@ -192,13 +192,15 @@ export default function Home() {
           </>
         )}
 
-        {state === "streaming" && streamInput && (
+        {/* Full-screen loader until first module arrives */}
+        {state === "streaming" && streamInput && streamModules.length === 0 && (
           <div className="max-w-2xl mx-auto py-8">
-            <LoadingScreen completedModules={streamModules.length} onCancel={handleReset} />
+            <LoadingScreen completedModules={0} onCancel={handleReset} />
           </div>
         )}
 
-        {state === "done" && streamInput && (
+        {/* Switch to results as soon as any module arrives — don't wait for done */}
+        {streamInput && streamModules.length > 0 && (
           <ResultsView
             ideaName={streamInput.idea_name}
             input={streamInput}
@@ -206,7 +208,7 @@ export default function Home() {
             score={streamScore}
             memo={streamMemo}
             generatedAt={generatedAt}
-            isStreaming={false}
+            isStreaming={state === "streaming"}
             onReset={handleReset}
           />
         )}

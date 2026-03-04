@@ -13,14 +13,26 @@ const PROSE_MODEL = "claude-sonnet-4-6";
 export async function callLLM(
   systemPrompt: string,
   userPrompt: string,
-  options: { model?: string; maxTokens?: number } = {}
+  options: { model?: string; maxTokens?: number; timeoutMs?: number } = {}
 ): Promise<string> {
-  const message = await client.messages.create({
-    model: options.model ?? PROSE_MODEL,
-    max_tokens: options.maxTokens ?? 4096,
-    system: systemPrompt,
-    messages: [{ role: "user", content: userPrompt }],
-  });
+  const timeoutMs = options.timeoutMs ?? 30_000;
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), timeoutMs);
+
+  let message: Awaited<ReturnType<typeof client.messages.create>>;
+  try {
+    message = await client.messages.create(
+      {
+        model: options.model ?? PROSE_MODEL,
+        max_tokens: options.maxTokens ?? 4096,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }],
+      },
+      { signal: abort.signal }
+    );
+  } finally {
+    clearTimeout(timer);
+  }
 
   const content = message.content[0];
   if (content.type !== "text") {
