@@ -23,6 +23,14 @@ function mdToHtml(md: string): string {
     .replace(/\n/g, "<br/>");
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 export async function sendBusinessPlanEmail(
   to: string,
   ideaName: string,
@@ -51,7 +59,7 @@ export async function sendBusinessPlanEmail(
     <!-- Title -->
     <div style="background:white;border-radius:12px;border:1px solid #e8eaf2;padding:24px 28px;margin-bottom:24px;">
       <p style="margin:0 0 4px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#9333ea;">Business Plan</p>
-      <h1 style="margin:0;font-size:20px;font-weight:700;color:#1a1a2e;">${ideaName}</h1>
+      <h1 style="margin:0;font-size:20px;font-weight:700;color:#1a1a2e;">${escapeHtml(ideaName)}</h1>
     </div>
 
     <!-- Body -->

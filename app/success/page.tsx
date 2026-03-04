@@ -21,10 +21,13 @@ function SuccessContent() {
       return;
     }
 
+    const controller = new AbortController();
+
     fetch("/api/fulfill", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ session_id: sessionId }),
+      signal: controller.signal,
     })
       .then((r) => r.json())
       .then((data) => {
@@ -33,9 +36,12 @@ function SuccessContent() {
         setState("success");
       })
       .catch((err) => {
+        if (err.name === "AbortError") return;
         setError(err.message || "Something went wrong.");
         setState("error");
       });
+
+    return () => controller.abort();
   }, [sessionId]);
 
   if (state === "loading") {

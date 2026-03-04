@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Payment not completed" }, { status: 402 });
     }
 
-    const m = session.metadata!;
+    if (!session.metadata) {
+      return NextResponse.json({ error: "Session metadata missing" }, { status: 400 });
+    }
+    const m = session.metadata;
 
     const input: UserInput = {
       idea_name: m.idea_name,

@@ -34,8 +34,8 @@ export async function callLLM(
     clearTimeout(timer);
   }
 
-  const content = message.content[0];
-  if (content.type !== "text") {
+  const content = message.content?.[0];
+  if (!content || content.type !== "text") {
     throw new Error("Unexpected non-text response from LLM");
   }
   return content.text;
@@ -47,7 +47,7 @@ function extractJSON(text: string): string {
 
   const jsonStart = text.indexOf("{");
   const jsonEnd = text.lastIndexOf("}");
-  if (jsonStart !== -1 && jsonEnd !== -1) {
+  if (jsonStart !== -1 && jsonEnd !== -1 && jsonStart < jsonEnd) {
     return text.slice(jsonStart, jsonEnd + 1);
   }
 

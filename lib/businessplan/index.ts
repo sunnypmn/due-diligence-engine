@@ -47,5 +47,5 @@ Positioning statement, target ICP, messaging pillars, channel mix (organic/paid/
 ## 90-Day Action Plan
 Prioritized table of milestones with columns: Week, Milestone, Owner, Success Metric`;
 
-  return callLLM(SYSTEM_PROMPT, userPrompt);
+  return callLLM(SYSTEM_PROMPT, userPrompt, { timeoutMs: 90_000 });
 }

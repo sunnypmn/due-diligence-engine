@@ -26,7 +26,7 @@ export function usePurchase(input: UserInput, score: FinalScore) {
   const [error, setError] = useState<string | null>(null);
 
   const handlePurchase = async () => {
-    if (!email || !email.includes("@")) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Enter a valid email.");
       return;
     }
