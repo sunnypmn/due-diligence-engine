@@ -181,13 +181,13 @@ export default function Home() {
           </>
         )}
 
-        {showResults && streamInput && streamModules.length === 0 && (
+        {state === "streaming" && streamInput && (
           <div className="max-w-2xl mx-auto py-8">
-            <LoadingScreen completedModules={0} />
+            <LoadingScreen completedModules={streamModules.length} />
           </div>
         )}
 
-        {showResults && streamInput && streamModules.length > 0 && (
+        {state === "done" && streamInput && (
           <ResultsView
             ideaName={streamInput.idea_name}
             input={streamInput}
@@ -195,7 +195,7 @@ export default function Home() {
             score={streamScore}
             memo={streamMemo}
             generatedAt={generatedAt}
-            isStreaming={state === "streaming"}
+            isStreaming={false}
             onReset={handleReset}
           />
         )}
