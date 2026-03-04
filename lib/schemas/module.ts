@@ -21,8 +21,7 @@ export const ModuleOutputSchema = z.object({
 
 export const FinalScoreSchema = z.object({
   weighted_score: z.number().min(0).max(100),
-  grade: z.enum(["Tier 1", "Strong", "Promising", "Marginal", "Pass"]),
-  letter_grade: z.enum(["A", "B", "C", "D", "F"]),
+  grade: z.enum(["Strong Opportunity", "Worth Exploring", "High Risk"]),
   confidence: ConfidenceEnum,
   risk_deduction: z.number().min(0).max(10),
   top_reasons: z.array(z.string()),

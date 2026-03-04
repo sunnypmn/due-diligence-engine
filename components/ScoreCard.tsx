@@ -1,27 +1,15 @@
 import type { FinalScore } from "../lib/schemas/module";
 
 const GRADE_META: Record<string, { bg: string; text: string; border: string; dot: string }> = {
-  "Tier 1": { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", dot: "bg-emerald-500" },
-  Strong:   { bg: "bg-blue-50",    text: "text-blue-700",    border: "border-blue-200",    dot: "bg-blue-500" },
-  Promising:{ bg: "bg-violet-50",  text: "text-violet-700",  border: "border-violet-200",  dot: "bg-violet-500" },
-  Marginal: { bg: "bg-orange-50",  text: "text-orange-700",  border: "border-orange-200",  dot: "bg-orange-400" },
-  Pass:     { bg: "bg-red-50",     text: "text-red-700",     border: "border-red-200",     dot: "bg-red-400" },
+  "Strong Opportunity": { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", dot: "bg-emerald-500" },
+  "Worth Exploring":    { bg: "bg-blue-50",    text: "text-blue-700",    border: "border-blue-200",    dot: "bg-blue-500" },
+  "High Risk":          { bg: "bg-orange-50",  text: "text-orange-700",  border: "border-orange-200",  dot: "bg-orange-400" },
 };
 
 const SCORE_COLOR: Record<string, string> = {
-  "Tier 1": "#10b981",
-  Strong:   "#6366f1",
-  Promising:"#8b5cf6",
-  Marginal: "#f97316",
-  Pass:     "#ef4444",
-};
-
-const LETTER_COLORS: Record<string, string> = {
-  A: "text-emerald-600 bg-emerald-50 border-emerald-200",
-  B: "text-blue-600 bg-blue-50 border-blue-200",
-  C: "text-violet-600 bg-violet-50 border-violet-200",
-  D: "text-orange-600 bg-orange-50 border-orange-200",
-  F: "text-red-600 bg-red-50 border-red-200",
+  "Strong Opportunity": "#10b981",
+  "Worth Exploring":    "#6366f1",
+  "High Risk":          "#f97316",
 };
 
 interface ScoreCardProps {
@@ -57,26 +45,13 @@ function ScoreRing({ score, grade }: { score: number; grade: string }) {
   );
 }
 
-function LetterGrade({ letter }: { letter: string }) {
-  const colors = LETTER_COLORS[letter] ?? LETTER_COLORS["F"];
-  return (
-    <div className={`flex-shrink-0 w-14 h-14 rounded-2xl border-2 flex items-center justify-center font-black text-3xl ${colors}`}>
-      {letter}
-    </div>
-  );
-}
-
 export default function ScoreCard({ score, ideaName }: ScoreCardProps) {
-  const meta = GRADE_META[score.grade] ?? GRADE_META["Pass"];
+  const meta = GRADE_META[score.grade] ?? GRADE_META["High Risk"];
 
   return (
     <div className="card p-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-        {/* Score ring + letter grade side by side */}
-        <div className="flex items-center gap-4 flex-shrink-0">
-          <ScoreRing score={score.weighted_score} grade={score.grade} />
-          <LetterGrade letter={score.letter_grade} />
-        </div>
+        <ScoreRing score={score.weighted_score} grade={score.grade} />
 
         <div className="flex-1 min-w-0">
           <h2 className="text-base font-semibold text-gray-900 mb-2 truncate">{ideaName}</h2>

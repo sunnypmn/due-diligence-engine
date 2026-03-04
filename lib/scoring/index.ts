@@ -1,19 +1,9 @@
 import type { ModuleOutput, FinalScore, Confidence } from "../schemas/module";
 
 function getGrade(score: number): FinalScore["grade"] {
-  if (score >= 90) return "Tier 1";
-  if (score >= 75) return "Strong";
-  if (score >= 55) return "Promising";
-  if (score >= 35) return "Marginal";
-  return "Pass";
-}
-
-function getLetterGrade(score: number): FinalScore["letter_grade"] {
-  if (score >= 90) return "A";
-  if (score >= 80) return "B";
-  if (score >= 70) return "C";
-  if (score >= 60) return "D";
-  return "F";
+  if (score >= 75) return "Strong Opportunity";
+  if (score >= 45) return "Worth Exploring";
+  return "High Risk";
 }
 
 function confidenceToNumber(c: Confidence): number {
@@ -58,7 +48,6 @@ export function computeScore(modules: ModuleOutput[]): FinalScore {
   return {
     weighted_score: weighted,
     grade: getGrade(weighted),
-    letter_grade: getLetterGrade(weighted),
     confidence,
     risk_deduction: Math.round(riskDeduction * 10) / 10,
     top_reasons,
