@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Due Diligence Engine",
-  description: "AI-powered early-stage startup due diligence and investment memo generator",
+  title: "Validate.ai — AI-Powered Startup Due Diligence",
+  description:
+    "Get a scored investment memo for any startup idea in under 2 minutes. Powered by real-time web research and Claude AI.",
 };
 
 export default function RootLayout({

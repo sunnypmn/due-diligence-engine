@@ -8,6 +8,23 @@ import type { FinalOutput } from "../lib/schemas/module";
 
 type AppState = "idle" | "loading" | "results" | "error";
 
+function Logo() {
+  return (
+    <div className="flex items-center gap-1.5">
+      {/* V mark */}
+      <div
+        className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+        style={{ background: "linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)" }}
+      >
+        V
+      </div>
+      <span className="text-lg font-semibold text-gray-900 tracking-tight">
+        Validate<span className="brand-gradient font-bold">.ai</span>
+      </span>
+    </div>
+  );
+}
+
 export default function Home() {
   const [state, setState] = useState<AppState>("idle");
   const [result, setResult] = useState<FinalOutput | null>(null);
@@ -33,7 +50,9 @@ export default function Home() {
       setResult(json);
       setState("results");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred"
+      );
       setState("error");
     }
   };
@@ -45,42 +64,81 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Due Diligence Engine
-          </h1>
-          <p className="text-gray-600 mt-1">
-            AI-powered early-stage startup analysis. Paste your idea and get a
-            scored investment memo in under 2 minutes.
-          </p>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
+      {/* Navbar */}
+      <nav className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+          <Logo />
+          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-purple-50 text-purple-600 border border-purple-100">
+            Early Access
+          </span>
         </div>
+      </nav>
 
-        {/* State machine */}
+      <div className="max-w-5xl mx-auto px-4 py-10">
         {(state === "idle" || state === "loading" || state === "error") && (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-            <InputForm onSubmit={handleSubmit} loading={state === "loading"} />
-            {state === "error" && error && (
-              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-700 font-medium">Error</p>
-                <p className="text-sm text-red-600 mt-1">{error}</p>
-                <button
-                  onClick={handleReset}
-                  className="mt-2 text-sm text-red-700 underline hover:text-red-900"
-                >
-                  Try again
-                </button>
+          <>
+            {/* Hero */}
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 text-purple-600 text-xs font-medium mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+                Powered by Claude AI + live web research
               </div>
-            )}
-          </div>
+              <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight mb-4">
+                Due diligence in{" "}
+                <span className="brand-gradient">under 2 minutes</span>
+              </h1>
+              <p className="text-lg text-gray-500 max-w-xl mx-auto">
+                Paste your startup idea. Get a scored investment memo with
+                competitor analysis, TAM estimate, and execution risk — backed by
+                real search data.
+              </p>
+
+              {/* Stats row */}
+              <div className="flex items-center justify-center gap-8 mt-8 mb-2">
+                {[
+                  { label: "Analysis modules", value: "5" },
+                  { label: "Max score", value: "100" },
+                  { label: "Avg runtime", value: "~90s" },
+                ].map((s) => (
+                  <div key={s.label} className="text-center">
+                    <div className="text-2xl font-bold text-gray-900">{s.value}</div>
+                    <div className="text-xs text-gray-400 mt-0.5">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Form card */}
+            <div className="card p-8 max-w-3xl mx-auto">
+              <InputForm onSubmit={handleSubmit} loading={state === "loading"} />
+              {state === "error" && error && (
+                <div className="mt-5 p-4 bg-red-50 border border-red-200 rounded-xl">
+                  <p className="text-sm font-semibold text-red-700">Something went wrong</p>
+                  <p className="text-sm text-red-600 mt-1">{error}</p>
+                  <button
+                    onClick={handleReset}
+                    className="mt-2 text-sm text-red-700 underline hover:text-red-900"
+                  >
+                    Try again
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
         )}
 
         {state === "results" && result && (
           <ResultsView result={result} onReset={handleReset} />
         )}
       </div>
-    </main>
+
+      {/* Footer */}
+      {state !== "results" && (
+        <footer className="mt-16 pb-8 text-center text-xs text-gray-400">
+          Validate.ai — AI-powered startup due diligence
+        </footer>
+      )}
+    </div>
   );
 }

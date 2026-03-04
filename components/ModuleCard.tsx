@@ -4,9 +4,9 @@ import { useState } from "react";
 import type { ModuleOutput } from "../lib/schemas/module";
 
 const CONFIDENCE_COLORS: Record<string, string> = {
-  High: "bg-emerald-100 text-emerald-700",
-  Medium: "bg-yellow-100 text-yellow-700",
-  Low: "bg-red-100 text-red-700",
+  High:   "bg-emerald-50 text-emerald-700 border-emerald-200",
+  Medium: "bg-amber-50  text-amber-700  border-amber-200",
+  Low:    "bg-red-50    text-red-600    border-red-200",
 };
 
 interface ModuleCardProps {
@@ -17,15 +17,15 @@ export default function ModuleCard({ module }: ModuleCardProps) {
   const [showEvidence, setShowEvidence] = useState(false);
   const pct = Math.round((module.score / module.max_score) * 100);
   const barColor =
-    pct >= 70 ? "bg-emerald-500" : pct >= 45 ? "bg-yellow-500" : "bg-red-500";
+    pct >= 70 ? "bg-emerald-500" : pct >= 45 ? "bg-amber-400" : "bg-red-400";
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+    <div className="card p-5">
       <div className="flex items-start justify-between gap-3 mb-3">
-        <h3 className="font-semibold text-gray-900">{module.module_name}</h3>
+        <h3 className="font-semibold text-gray-900 text-sm">{module.module_name}</h3>
         <span
-          className={`text-xs font-medium px-2 py-1 rounded-full flex-shrink-0 ${
-            CONFIDENCE_COLORS[module.confidence] ?? "bg-gray-100 text-gray-600"
+          className={`text-xs font-medium px-2.5 py-0.5 rounded-full flex-shrink-0 border ${
+            CONFIDENCE_COLORS[module.confidence] ?? "bg-gray-100 text-gray-600 border-gray-200"
           }`}
         >
           {module.confidence}
@@ -33,36 +33,34 @@ export default function ModuleCard({ module }: ModuleCardProps) {
       </div>
 
       {/* Score bar */}
-      <div className="mb-3">
-        <div className="flex justify-between text-sm mb-1">
-          <span className="text-gray-600">Score</span>
-          <span className="font-medium text-gray-900">
+      <div className="mb-4">
+        <div className="flex justify-between text-xs mb-1.5">
+          <span className="text-gray-400">Score</span>
+          <span className="font-semibold text-gray-700">
             {module.score} / {module.max_score}
           </span>
         </div>
-        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all ${barColor}`}
-            style={{ width: `${pct}%` }}
+            className={`h-full rounded-full ${barColor}`}
+            style={{ width: `${pct}%`, transition: "width 0.6s ease" }}
           />
         </div>
       </div>
 
       {/* Summary */}
-      <p className="text-sm text-gray-700 mb-4">{module.summary}</p>
+      <p className="text-xs text-gray-600 leading-relaxed mb-4">{module.summary}</p>
 
       {/* Risks + Opportunities */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
         {module.risks.length > 0 && (
           <div>
-            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-              Risks
-            </h4>
-            <ul className="space-y-1">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1.5">Risks</p>
+            <ul className="space-y-1.5">
               {module.risks.map((r, i) => (
-                <li key={i} className="text-xs text-gray-700 flex gap-1">
-                  <span className="text-red-400 flex-shrink-0 mt-0.5">!</span>
-                  {r}
+                <li key={i} className="text-xs text-gray-600 flex gap-1.5">
+                  <span className="text-red-400 flex-shrink-0 font-bold">!</span>
+                  <span>{r}</span>
                 </li>
               ))}
             </ul>
@@ -70,14 +68,12 @@ export default function ModuleCard({ module }: ModuleCardProps) {
         )}
         {module.opportunities.length > 0 && (
           <div>
-            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-              Opportunities
-            </h4>
-            <ul className="space-y-1">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1.5">Upside</p>
+            <ul className="space-y-1.5">
               {module.opportunities.map((o, i) => (
-                <li key={i} className="text-xs text-gray-700 flex gap-1">
-                  <span className="text-emerald-500 flex-shrink-0 mt-0.5">+</span>
-                  {o}
+                <li key={i} className="text-xs text-gray-600 flex gap-1.5">
+                  <span className="text-emerald-500 flex-shrink-0 font-bold">+</span>
+                  <span>{o}</span>
                 </li>
               ))}
             </ul>
@@ -87,34 +83,34 @@ export default function ModuleCard({ module }: ModuleCardProps) {
 
       {/* Evidence toggle */}
       {module.evidence.length > 0 && (
-        <div>
+        <div className="border-t border-gray-100 pt-3">
           <button
             onClick={() => setShowEvidence(!showEvidence)}
-            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+            className="text-xs text-purple-600 hover:text-purple-800 font-medium flex items-center gap-1"
           >
-            {showEvidence ? "Hide" : "Show"} {module.evidence.length} evidence
-            source{module.evidence.length !== 1 ? "s" : ""}
+            <svg
+              className={`w-3 h-3 transition-transform ${showEvidence ? "rotate-90" : ""}`}
+              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+            {module.evidence.length} source{module.evidence.length !== 1 ? "s" : ""}
           </button>
 
           {showEvidence && (
-            <div className="mt-2 space-y-2">
+            <div className="mt-2.5 space-y-2">
               {module.evidence.map((ev, i) => (
-                <div
-                  key={i}
-                  className="p-2 bg-gray-50 rounded-lg border border-gray-100"
-                >
+                <div key={i} className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
                   <a
                     href={ev.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-medium text-blue-600 hover:underline block truncate"
+                    className="text-xs font-medium text-purple-600 hover:underline block truncate"
                   >
                     {ev.title || ev.url}
                   </a>
                   {ev.snippet && (
-                    <p className="text-xs text-gray-600 mt-1 line-clamp-2">
-                      {ev.snippet}
-                    </p>
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">{ev.snippet}</p>
                   )}
                 </div>
               ))}
