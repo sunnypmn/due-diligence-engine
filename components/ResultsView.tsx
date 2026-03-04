@@ -97,7 +97,9 @@ export default function ResultsView({
           <h2 className="text-base font-semibold text-gray-900 mb-3">Module Breakdown</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {modules.map((module, i) => (
-              <ModuleCard key={i} module={module} />
+              <div key={i} className={modules.length % 2 !== 0 && i === modules.length - 1 ? "md:col-span-2 md:max-w-[50%] md:mx-auto w-full" : ""}>
+                <ModuleCard module={module} />
+              </div>
             ))}
             {isStreaming &&
               Array.from({ length: totalExpected - modules.length }).map((_, i) => (

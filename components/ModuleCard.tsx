@@ -9,15 +9,29 @@ const CONFIDENCE_COLORS: Record<string, string> = {
   Low:    "bg-red-50    text-red-600    border-red-200",
 };
 
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      className={`w-3 h-3 transition-transform ${open ? "rotate-90" : ""}`}
+      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  );
+}
+
 interface ModuleCardProps {
   module: ModuleOutput;
 }
 
 export default function ModuleCard({ module }: ModuleCardProps) {
+  const [showDetails, setShowDetails] = useState(false);
   const [showEvidence, setShowEvidence] = useState(false);
   const pct = Math.round((module.score / module.max_score) * 100);
   const barColor =
     pct >= 70 ? "bg-emerald-500" : pct >= 45 ? "bg-amber-400" : "bg-red-400";
+
+  const hasDetails = module.risks.length > 0 || module.opportunities.length > 0;
 
   return (
     <div className="card p-5">
@@ -49,51 +63,60 @@ export default function ModuleCard({ module }: ModuleCardProps) {
       </div>
 
       {/* Summary */}
-      <p className="text-xs text-gray-600 leading-relaxed mb-4">{module.summary}</p>
+      <p className="text-xs text-gray-600 leading-relaxed mb-3">{module.summary}</p>
 
-      {/* Risks + Opportunities */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-        {module.risks.length > 0 && (
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1.5">Risks</p>
-            <ul className="space-y-1.5">
-              {module.risks.map((r, i) => (
-                <li key={i} className="text-xs text-gray-600 flex gap-1.5">
-                  <span className="text-red-400 flex-shrink-0 font-bold">!</span>
-                  <span>{r}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {module.opportunities.length > 0 && (
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1.5">Upside</p>
-            <ul className="space-y-1.5">
-              {module.opportunities.map((o, i) => (
-                <li key={i} className="text-xs text-gray-600 flex gap-1.5">
-                  <span className="text-emerald-500 flex-shrink-0 font-bold">+</span>
-                  <span>{o}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+      {/* Risks + Opportunities — collapsible */}
+      {hasDetails && (
+        <div className="border-t border-gray-100 pt-3">
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="text-xs text-purple-600 hover:text-purple-800 font-medium flex items-center gap-1 mb-0"
+          >
+            <ChevronIcon open={showDetails} />
+            Risks &amp; Upsides
+          </button>
+
+          {showDetails && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+              {module.risks.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1.5">Risks</p>
+                  <ul className="space-y-1.5">
+                    {module.risks.map((r, i) => (
+                      <li key={i} className="text-xs text-gray-600 flex gap-1.5">
+                        <span className="text-red-400 flex-shrink-0 font-bold">!</span>
+                        <span>{r}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {module.opportunities.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1.5">Upside</p>
+                  <ul className="space-y-1.5">
+                    {module.opportunities.map((o, i) => (
+                      <li key={i} className="text-xs text-gray-600 flex gap-1.5">
+                        <span className="text-emerald-500 flex-shrink-0 font-bold">+</span>
+                        <span>{o}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Evidence toggle */}
       {module.evidence.length > 0 && (
-        <div className="border-t border-gray-100 pt-3">
+        <div className={`${hasDetails ? "mt-3" : "border-t border-gray-100 pt-3"}`}>
           <button
             onClick={() => setShowEvidence(!showEvidence)}
             className="text-xs text-purple-600 hover:text-purple-800 font-medium flex items-center gap-1"
           >
-            <svg
-              className={`w-3 h-3 transition-transform ${showEvidence ? "rotate-90" : ""}`}
-              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
+            <ChevronIcon open={showEvidence} />
             {module.evidence.length} source{module.evidence.length !== 1 ? "s" : ""}
           </button>
 
