@@ -34,7 +34,7 @@ export default function ModuleCard({ module }: ModuleCardProps) {
   const hasDetails = module.risks.length > 0 || module.opportunities.length > 0;
 
   return (
-    <div className="card p-5">
+    <div className="card p-5 flex flex-col h-full">
       <div className="flex items-start justify-between gap-3 mb-3">
         <h3 className="font-semibold text-gray-900 text-sm">{module.module_name}</h3>
         <span
@@ -62,8 +62,8 @@ export default function ModuleCard({ module }: ModuleCardProps) {
         </div>
       </div>
 
-      {/* Summary */}
-      <p className="text-xs text-gray-600 leading-relaxed mb-3">{module.summary}</p>
+      {/* Summary — flex-1 pushes toggles to the bottom */}
+      <p className="text-xs text-gray-600 leading-relaxed mb-3 flex-1">{module.summary}</p>
 
       {/* Risks + Opportunities — collapsible */}
       {hasDetails && (
