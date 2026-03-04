@@ -7,18 +7,31 @@ export interface SerpResult {
 export async function searchDuckDuckGo(query: string): Promise<SerpResult[]> {
   const params = new URLSearchParams({ q: query, kl: "us-en" });
 
-  const response = await fetch("https://html.duckduckgo.com/html/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "User-Agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      Accept:
-        "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.5",
-    },
-    body: params.toString(),
-  });
+  const abort = new AbortController();
+  const timeout = setTimeout(() => abort.abort(), 10_000); // 10s timeout
+
+  let response: Response;
+  try {
+    response = await fetch("https://html.duckduckgo.com/html/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+      },
+      body: params.toString(),
+      signal: abort.signal,
+    });
+  } catch (err) {
+    clearTimeout(timeout);
+    // On timeout or network error, return empty results so the module still completes
+    if (err instanceof Error && err.name === "AbortError") return [];
+    throw err;
+  }
+  clearTimeout(timeout);
 
   if (!response.ok) {
     throw new Error(`DuckDuckGo returned ${response.status}`);

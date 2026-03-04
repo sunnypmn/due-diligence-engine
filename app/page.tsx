@@ -194,7 +194,7 @@ export default function Home() {
 
         {state === "streaming" && streamInput && (
           <div className="max-w-2xl mx-auto py-8">
-            <LoadingScreen completedModules={streamModules.length} />
+            <LoadingScreen completedModules={streamModules.length} onCancel={handleReset} />
           </div>
         )}
 

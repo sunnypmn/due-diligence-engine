@@ -21,15 +21,22 @@ const HEADLINES = [
 
 interface LoadingScreenProps {
   completedModules: number;
+  onCancel?: () => void;
 }
 
-export default function LoadingScreen({ completedModules }: LoadingScreenProps) {
+export default function LoadingScreen({ completedModules, onCancel }: LoadingScreenProps) {
   const [headlineIdx, setHeadlineIdx] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
     const id = setInterval(() => {
       setHeadlineIdx((i) => (i + 1) % HEADLINES.length);
     }, 2200);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => setElapsed((s) => s + 1), 1000);
     return () => clearInterval(id);
   }, []);
 
@@ -149,8 +156,22 @@ export default function LoadingScreen({ completedModules }: LoadingScreenProps) 
 
       {/* Footer */}
       <p className="mt-8 text-xs text-purple-500">
-        Powered by Claude AI + live web research · typically 20–40 seconds
+        Powered by Claude AI + live web research · typically 20-40 seconds
       </p>
+
+      {/* Escape hatch after 45s */}
+      {elapsed >= 45 && onCancel && (
+        <div className="mt-4 text-center">
+          <p className="text-xs text-purple-400 mb-2">Taking longer than expected...</p>
+          <button
+            onClick={onCancel}
+            className="text-xs font-semibold text-white px-4 py-2 rounded-lg"
+            style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)" }}
+          >
+            Cancel and try again
+          </button>
+        </div>
+      )}
     </div>
   );
 }
