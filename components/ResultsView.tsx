@@ -53,14 +53,6 @@ export default function ResultsView({
               ) : null}
             </p>
           </div>
-          {!isStreaming && (
-            <button
-              onClick={onReset}
-              className="text-sm font-medium text-purple-600 hover:text-purple-800 px-4 py-2 rounded-lg bg-purple-50 hover:bg-purple-100 transition-colors"
-            >
-              New idea
-            </button>
-          )}
         </div>
 
         {/* 1. Score card */}

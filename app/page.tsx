@@ -134,9 +134,19 @@ export default function Home() {
       <nav className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <Logo />
+          <div className="flex items-center gap-3">
+            {showResults && (
+              <button
+                onClick={handleReset}
+                className="text-sm font-medium text-purple-600 hover:text-purple-800 px-4 py-2 rounded-lg bg-purple-50 hover:bg-purple-100 transition-colors"
+              >
+                New idea
+              </button>
+            )}
           <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-purple-50 text-purple-600 border border-purple-100">
             Early Access
           </span>
+          </div>
         </div>
       </nav>
 
