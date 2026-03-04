@@ -25,7 +25,7 @@ Scoring guide (inverse of density - more competitors = lower score):
 - Medium density (2-4 competitors, some gaps): score 7-10
 - Low density (0-1 direct competitors, blue ocean): score 11-15
 
-Include up to 5 evidence items from the most relevant search results.`;
+Include up to 3 evidence items.`;
 
 export async function runCompetitorScan(input: UserInput): Promise<ModuleOutput> {
   const query = `"${input.idea_name}" competitors alternatives ${input.target_geo}`;

@@ -27,7 +27,7 @@ Scoring guide (inverse of complexity - more risks = lower score):
 - Very high risk (multiple major barriers): 0-2
 
 Assess: regulatory/compliance requirements, technical complexity, platform dependencies, sales cycle length, key-person risk.
-Include up to 5 evidence items.`;
+Include up to 3 evidence items.`;
 
 export async function runExecutionRisk(input: UserInput): Promise<ModuleOutput> {
   const query = `${input.idea_name} regulatory compliance technical complexity ${input.target_geo}`;

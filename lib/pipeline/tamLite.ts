@@ -27,7 +27,7 @@ Scoring guide:
 - Tiny TAM (<$100M) or unclear market: 0-3
 
 Include explicit assumptions in your summary. State confidence based on data quality.
-Include up to 5 evidence items.`;
+Include up to 3 evidence items.`;
 
 export async function runTamLite(input: UserInput): Promise<ModuleOutput> {
   const query = `${input.target_geo} ${input.target_customer} market size ${input.business_model}`;

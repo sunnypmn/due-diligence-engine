@@ -32,7 +32,7 @@ This module covers TWO dimensions (total max 30):
    - Some recent activity, mixed signals: 4-7
    - Old or stale results, declining interest: 0-3
 
-Combine both into a single score (sum of both dimensions). Include up to 6 evidence items.`;
+Combine both into a single score (sum of both dimensions). Include up to 3 evidence items.`;
 
 export async function runDemandSignals(input: UserInput): Promise<ModuleOutput> {
   const query = `${input.customer_pain} ${input.target_customer} problem solution`;

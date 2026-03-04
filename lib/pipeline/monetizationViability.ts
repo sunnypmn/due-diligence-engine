@@ -27,7 +27,7 @@ Scoring guide:
 - No evidence of monetization viability or very high CAC/LTV issues: 0-3
 
 Assess: pricing sanity (is the price realistic?), CAC proxy (how hard to acquire customers qualitatively?), revenue model viability (SaaS, marketplace cut, etc.).
-Include up to 5 evidence items.`;
+Include up to 3 evidence items.`;
 
 export async function runMonetizationViability(input: UserInput): Promise<ModuleOutput> {
   const query = `${input.business_model} pricing ${input.target_customer} willingness to pay`;

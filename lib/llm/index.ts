@@ -72,7 +72,7 @@ export async function callModuleWithRetry(
       // Use Haiku for speed — modules only need structured JSON extraction
       const response = await callLLM(systemPrompt, prompt, {
         model: MODULE_MODEL,
-        maxTokens: 800,
+        maxTokens: 1100,
       });
       lastResponse = response;
 
