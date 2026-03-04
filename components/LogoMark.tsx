@@ -32,21 +32,12 @@ export default function LogoMark({ size = 32, className = "" }: LogoMarkProps) {
       {/* Rounded square background */}
       <rect width="32" height="32" rx="9" fill={`url(#${id}-bg)`} />
 
-      {/* Spark / validate mark: rising line with upward tick */}
+      {/* V shape with checkmark style — right arm rises higher than left */}
       <g filter={`url(#${id}-glow)`}>
         <polyline
-          points="5,20 11,26 21,8 27,12"
+          points="5,8 14,24 27,6"
           stroke={`url(#${id}-stroke)`}
-          strokeWidth="2.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
-        {/* Upward tick / arrow at end */}
-        <polyline
-          points="23,7 27,12 22,13"
-          stroke="white"
-          strokeWidth="2.8"
+          strokeWidth="3.2"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
