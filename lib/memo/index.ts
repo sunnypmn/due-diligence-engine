@@ -51,6 +51,9 @@ ${score.top_risks.join("\n")}
 
 Write the full investment memo now. Use markdown formatting. Do not use em dashes.`;
 
-  const memo = await callLLM(SYSTEM_PROMPT, userPrompt);
+  const memo = await callLLM(SYSTEM_PROMPT, userPrompt, {
+    model: "claude-haiku-4-5-20251001",
+    maxTokens: 1500,
+  });
   return memo;
 }

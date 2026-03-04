@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
         const memo = await generateMemo(input, modules, score);
         controller.enqueue(sseEvent({ type: "memo", memo }));
 
+
         controller.enqueue(
           sseEvent({ type: "done", generated_at: new Date().toISOString() })
         );
