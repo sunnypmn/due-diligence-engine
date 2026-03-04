@@ -47,6 +47,7 @@ export default function InputForm({ onSubmit, loading }: InputFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (generating) return;
     onSubmit(form);
   };
 
@@ -105,7 +106,7 @@ export default function InputForm({ onSubmit, loading }: InputFormProps) {
             type="text"
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleGenerate(); } }}
             placeholder="e.g. An app that helps solo lawyers manage client intake and billing"
             className="flex-1 border border-purple-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-400"
           />
@@ -267,7 +268,7 @@ export default function InputForm({ onSubmit, loading }: InputFormProps) {
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || generating}
         className="btn-brand w-full text-white py-3.5 px-6 rounded-xl font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-md shadow-purple-200"
       >
         {loading ? (
