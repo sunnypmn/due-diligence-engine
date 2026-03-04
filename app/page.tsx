@@ -198,8 +198,13 @@ export default function Home() {
       </div>
 
       {!showResults && (
-        <footer className="mt-16 pb-8 text-center text-xs text-gray-400">
-          Validate.ai · AI-powered startup due diligence
+        <footer className="mt-16 pb-8 text-center text-xs text-gray-400 space-y-1">
+          <p>Validate.ai · AI-powered startup due diligence</p>
+          <p>
+            <a href="/privacy" className="hover:text-purple-600 underline underline-offset-2 transition-colors">
+              Privacy Policy
+            </a>
+          </p>
         </footer>
       )}
     </div>
