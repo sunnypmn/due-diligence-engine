@@ -4,14 +4,13 @@ import { useState } from "react";
 import InputForm from "../components/InputForm";
 import ResultsView from "../components/ResultsView";
 import type { UserInput } from "../lib/schemas/input";
-import type { FinalOutput } from "../lib/schemas/module";
+import type { FinalScore, ModuleOutput } from "../lib/schemas/module";
 
-type AppState = "idle" | "loading" | "results" | "error";
+type AppState = "idle" | "streaming" | "done" | "error";
 
 function Logo() {
   return (
     <div className="flex items-center gap-1.5">
-      {/* V mark */}
       <div
         className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
         style={{ background: "linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)" }}
@@ -27,12 +26,24 @@ function Logo() {
 
 export default function Home() {
   const [state, setState] = useState<AppState>("idle");
-  const [result, setResult] = useState<FinalOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Progressive stream state
+  const [streamInput, setStreamInput] = useState<UserInput | null>(null);
+  const [streamModules, setStreamModules] = useState<ModuleOutput[]>([]);
+  const [streamScore, setStreamScore] = useState<FinalScore | null>(null);
+  const [streamMemo, setStreamMemo] = useState<string | null>(null);
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+
   const handleSubmit = async (data: UserInput) => {
-    setState("loading");
+    // Reset progressive state
+    setStreamInput(data);
+    setStreamModules([]);
+    setStreamScore(null);
+    setStreamMemo(null);
+    setGeneratedAt(null);
     setError(null);
+    setState("streaming");
 
     try {
       const response = await fetch("/api/run", {
@@ -41,27 +52,69 @@ export default function Home() {
         body: JSON.stringify(data),
       });
 
-      const json = await response.json();
-
       if (!response.ok) {
+        const json = await response.json();
         throw new Error(json.error || `Server error ${response.status}`);
       }
 
-      setResult(json);
-      setState("results");
+      const reader = response.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        // SSE events are separated by \n\n
+        const parts = buffer.split("\n\n");
+        buffer = parts.pop() ?? "";
+
+        for (const part of parts) {
+          const line = part.trim();
+          if (!line.startsWith("data: ")) continue;
+          try {
+            const event = JSON.parse(line.slice(6));
+            switch (event.type) {
+              case "module":
+                setStreamModules((prev) => [...prev, event.module]);
+                break;
+              case "score":
+                setStreamScore(event.score);
+                break;
+              case "memo":
+                setStreamMemo(event.memo);
+                break;
+              case "done":
+                setGeneratedAt(event.generated_at);
+                setState("done");
+                break;
+              case "error":
+                throw new Error(event.message);
+            }
+          } catch (parseErr) {
+            // Skip malformed SSE events
+            if (parseErr instanceof SyntaxError) continue;
+            throw parseErr;
+          }
+        }
+      }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unexpected error occurred"
-      );
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
       setState("error");
     }
   };
 
   const handleReset = () => {
     setState("idle");
-    setResult(null);
+    setStreamInput(null);
+    setStreamModules([]);
+    setStreamScore(null);
+    setStreamMemo(null);
     setError(null);
   };
+
+  const showResults = state === "streaming" || state === "done";
 
   return (
     <div className="min-h-screen" style={{ background: "var(--background)" }}>
@@ -76,7 +129,7 @@ export default function Home() {
       </nav>
 
       <div className="max-w-5xl mx-auto px-4 py-10">
-        {(state === "idle" || state === "loading" || state === "error") && (
+        {(state === "idle" || state === "error") && (
           <>
             {/* Hero */}
             <div className="text-center mb-10">
@@ -86,7 +139,7 @@ export default function Home() {
               </div>
               <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight mb-4">
                 Due diligence in{" "}
-                <span className="brand-gradient">under 2 minutes</span>
+                <span className="brand-gradient">under 60 seconds</span>
               </h1>
               <p className="text-lg text-gray-500 max-w-xl mx-auto">
                 Paste your startup idea. Get a scored investment memo with
@@ -94,12 +147,11 @@ export default function Home() {
                 real search data.
               </p>
 
-              {/* Stats row */}
               <div className="flex items-center justify-center gap-8 mt-8 mb-2">
                 {[
                   { label: "Analysis modules", value: "5" },
                   { label: "Max score", value: "100" },
-                  { label: "Avg runtime", value: "~90s" },
+                  { label: "Avg runtime", value: "~30s" },
                 ].map((s) => (
                   <div key={s.label} className="text-center">
                     <div className="text-2xl font-bold text-gray-900">{s.value}</div>
@@ -111,7 +163,7 @@ export default function Home() {
 
             {/* Form card */}
             <div className="card p-8 max-w-3xl mx-auto">
-              <InputForm onSubmit={handleSubmit} loading={state === "loading"} />
+              <InputForm onSubmit={handleSubmit} loading={false} />
               {state === "error" && error && (
                 <div className="mt-5 p-4 bg-red-50 border border-red-200 rounded-xl">
                   <p className="text-sm font-semibold text-red-700">Something went wrong</p>
@@ -128,13 +180,21 @@ export default function Home() {
           </>
         )}
 
-        {state === "results" && result && (
-          <ResultsView result={result} onReset={handleReset} />
+        {showResults && streamInput && (
+          <ResultsView
+            ideaName={streamInput.idea_name}
+            input={streamInput}
+            modules={streamModules}
+            score={streamScore}
+            memo={streamMemo}
+            generatedAt={generatedAt}
+            isStreaming={state === "streaming"}
+            onReset={handleReset}
+          />
         )}
       </div>
 
-      {/* Footer */}
-      {state !== "results" && (
+      {!showResults && (
         <footer className="mt-16 pb-8 text-center text-xs text-gray-400">
           Validate.ai — AI-powered startup due diligence
         </footer>

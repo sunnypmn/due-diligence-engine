@@ -1,18 +1,23 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { z } from "zod";
 import { ModuleOutputSchema, type ModuleOutput } from "../schemas/module";
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// Fast model for structured JSON extraction in pipeline modules
+const MODULE_MODEL = "claude-haiku-4-5-20251001";
+// Full model for prose generation (memo, business plan, form fill)
+const PROSE_MODEL = "claude-sonnet-4-6";
+
 export async function callLLM(
   systemPrompt: string,
-  userPrompt: string
+  userPrompt: string,
+  options: { model?: string; maxTokens?: number } = {}
 ): Promise<string> {
   const message = await client.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 4096,
+    model: options.model ?? PROSE_MODEL,
+    max_tokens: options.maxTokens ?? 4096,
     system: systemPrompt,
     messages: [{ role: "user", content: userPrompt }],
   });
@@ -25,11 +30,9 @@ export async function callLLM(
 }
 
 function extractJSON(text: string): string {
-  // Try to find JSON block in markdown code fences
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (fenced) return fenced[1].trim();
 
-  // Try to find raw JSON object
   const jsonStart = text.indexOf("{");
   const jsonEnd = text.lastIndexOf("}");
   if (jsonStart !== -1 && jsonEnd !== -1) {
@@ -54,7 +57,11 @@ export async function callModuleWithRetry(
           ? userPrompt
           : `${userPrompt}\n\nYour previous output failed validation: ${lastError?.message}. Return valid JSON matching the exact schema. Previous response was: ${lastResponse.slice(0, 500)}`;
 
-      const response = await callLLM(systemPrompt, prompt);
+      // Use Haiku for speed — modules only need structured JSON extraction
+      const response = await callLLM(systemPrompt, prompt, {
+        model: MODULE_MODEL,
+        maxTokens: 1200,
+      });
       lastResponse = response;
 
       const jsonStr = extractJSON(response);
