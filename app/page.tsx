@@ -42,11 +42,15 @@ export default function Home() {
     setError(null);
     setState("streaming");
 
+    const abort = new AbortController();
+    const timeout = setTimeout(() => abort.abort(), 120_000); // 2-min hard timeout
+
     try {
       const response = await fetch("/api/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        signal: abort.signal,
       });
 
       if (!response.ok) {
@@ -57,13 +61,13 @@ export default function Home() {
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
+      let receivedDone = false;
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
         buffer += decoder.decode(value, { stream: true });
-        // SSE events are separated by \n\n
         const parts = buffer.split("\n\n");
         buffer = parts.pop() ?? "";
 
@@ -83,6 +87,7 @@ export default function Home() {
                 setStreamMemo(event.memo);
                 break;
               case "done":
+                receivedDone = true;
                 setGeneratedAt(event.generated_at);
                 setState("done");
                 break;
@@ -90,15 +95,25 @@ export default function Home() {
                 throw new Error(event.message);
             }
           } catch (parseErr) {
-            // Skip malformed SSE events
             if (parseErr instanceof SyntaxError) continue;
             throw parseErr;
           }
         }
       }
+
+      // Stream closed without a done event — surface an error
+      if (!receivedDone) {
+        throw new Error("Analysis incomplete — the server closed early. Please try again.");
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+      if (err instanceof Error && err.name === "AbortError") {
+        setError("Analysis timed out. Please try again.");
+      } else {
+        setError(err instanceof Error ? err.message : "An unexpected error occurred");
+      }
       setState("error");
+    } finally {
+      clearTimeout(timeout);
     }
   };
 
