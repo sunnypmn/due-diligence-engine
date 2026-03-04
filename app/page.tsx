@@ -4,6 +4,7 @@ import { useState } from "react";
 import InputForm from "../components/InputForm";
 import ResultsView from "../components/ResultsView";
 import LoadingScreen from "../components/LoadingScreen";
+import LogoMark from "../components/LogoMark";
 import type { UserInput } from "../lib/schemas/input";
 import type { FinalScore, ModuleOutput } from "../lib/schemas/module";
 
@@ -11,13 +12,8 @@ type AppState = "idle" | "streaming" | "done" | "error";
 
 function Logo() {
   return (
-    <div className="flex items-center gap-1.5">
-      <div
-        className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-        style={{ background: "linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)" }}
-      >
-        V
-      </div>
+    <div className="flex items-center gap-2">
+      <LogoMark size={32} />
       <span className="text-lg font-semibold text-gray-900 tracking-tight">
         Validate<span className="brand-gradient font-bold">.ai</span>
       </span>

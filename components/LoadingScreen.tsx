@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import LogoMark from "./LogoMark";
 
 const MODULES = [
   { label: "Scanning competitors",       icon: "🔍" },
@@ -65,15 +66,12 @@ export default function LoadingScreen({ completedModules }: LoadingScreenProps) 
           />
         </div>
 
-        {/* V logo */}
-        <div
-          className="relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-2xl"
-          style={{ background: "linear-gradient(135deg, #9333ea, #7c3aed)" }}
-        >
-          V
+        {/* Logo mark */}
+        <div className="relative z-10 shadow-2xl">
+          <LogoMark size={56} className="rounded-2xl" />
           {/* Glow */}
           <div
-            className="absolute inset-0 rounded-2xl opacity-60 blur-xl"
+            className="absolute inset-0 rounded-2xl opacity-50 blur-xl -z-10"
             style={{ background: "linear-gradient(135deg, #9333ea, #7c3aed)" }}
           />
         </div>
