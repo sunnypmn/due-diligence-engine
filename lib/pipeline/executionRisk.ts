@@ -34,7 +34,7 @@ export async function runExecutionRisk(input: UserInput): Promise<ModuleOutput> 
   const results = await search(query);
 
   const serpContext = results
-    .slice(0, 8)
+    .slice(0, 5)
     .map((r, i) => `[${i + 1}] ${r.title}\nURL: ${r.url}\n${r.snippet}`)
     .join("\n\n");
 

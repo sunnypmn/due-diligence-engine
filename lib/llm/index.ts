@@ -57,7 +57,7 @@ function extractJSON(text: string): string {
 export async function callModuleWithRetry(
   systemPrompt: string,
   userPrompt: string,
-  maxRetries = 2
+  maxRetries = 1
 ): Promise<ModuleOutput> {
   let lastError: Error | null = null;
   let lastResponse = "";
@@ -72,7 +72,7 @@ export async function callModuleWithRetry(
       // Use Haiku for speed — modules only need structured JSON extraction
       const response = await callLLM(systemPrompt, prompt, {
         model: MODULE_MODEL,
-        maxTokens: 1200,
+        maxTokens: 800,
       });
       lastResponse = response;
 
