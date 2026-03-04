@@ -66,73 +66,66 @@ export default function BusinessPlanUpsell({ input, score }: BusinessPlanUpsellP
       </div>
 
       <div className="px-6 pb-6 pt-3">
-        <div className="flex flex-col sm:flex-row sm:items-start gap-8">
+        {/* Headline */}
+        <h2 className="text-2xl font-bold text-white mb-2 leading-snug">
+          Turn this report into a{" "}
+          <span style={{ background: "linear-gradient(90deg, #c084fc, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            full business plan
+          </span>
+        </h2>
+        <p className="text-sm text-purple-200 mb-5 leading-relaxed">
+          Claude AI uses your validation data to generate a 6-section investor-ready
+          plan — emailed to you in under 60 seconds.
+        </p>
 
-          {/* Left: headline + CTA */}
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-white mb-2 leading-snug">
-              Turn this report into a<br />
-              <span style={{ background: "linear-gradient(90deg, #c084fc, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                full business plan
+        {/* Email + CTA */}
+        <div className="flex flex-col sm:flex-row gap-2 mb-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handlePurchase()}
+            placeholder="your@email.com"
+            className="flex-1 px-4 py-3 rounded-xl text-sm bg-white/10 border border-white/20 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:bg-white/15"
+          />
+          <button
+            onClick={handlePurchase}
+            disabled={loading}
+            className="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-sm text-white disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap shadow-lg"
+            style={{ background: "linear-gradient(135deg, #a855f7, #9333ea)" }}
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Redirecting...
               </span>
-            </h2>
-            <p className="text-sm text-purple-200 mb-6 leading-relaxed">
-              Claude AI uses your validation data to generate a 6-section investor-ready
-              plan — emailed to you in under 60 seconds.
-            </p>
+            ) : (
+              "Get Business Plan — $99"
+            )}
+          </button>
+        </div>
+        {error && <p className="text-xs text-red-300 mb-2">{error}</p>}
+        <p className="text-xs text-purple-400 mb-5">
+          One-time payment · Stripe · Delivered instantly
+        </p>
 
-            {/* Email + CTA */}
-            <div className="flex flex-col sm:flex-row gap-2 mb-3">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handlePurchase()}
-                placeholder="your@email.com"
-                className="flex-1 px-4 py-3 rounded-xl text-sm bg-white/10 border border-white/20 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:bg-white/15"
-              />
-              <button
-                onClick={handlePurchase}
-                disabled={loading}
-                className="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-sm text-white disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap shadow-lg"
-                style={{ background: "linear-gradient(135deg, #a855f7, #9333ea)" }}
-              >
-                {loading ? (
-                  <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Redirecting...
-                  </span>
-                ) : (
-                  "Get Business Plan — $99"
-                )}
-              </button>
+        {/* What's included grid — below the form */}
+        <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-3">
+          What's included
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {SECTIONS.map((s) => (
+            <div key={s.title}
+              className="rounded-xl p-3 flex flex-col gap-1"
+              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
+              <span className="text-lg">{s.icon}</span>
+              <span className="text-xs font-semibold text-white leading-tight">{s.title}</span>
+              <span className="text-xs text-purple-300 leading-tight">{s.desc}</span>
             </div>
-            {error && <p className="text-xs text-red-300 mb-2">{error}</p>}
-            <p className="text-xs text-purple-400">
-              One-time payment · Stripe · Delivered instantly
-            </p>
-          </div>
-
-          {/* Right: locked section grid */}
-          <div className="sm:w-64 flex-shrink-0">
-            <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-3">
-              What's included
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {SECTIONS.map((s) => (
-                <div key={s.title}
-                  className="rounded-xl p-3 flex flex-col gap-1"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                  <span className="text-lg">{s.icon}</span>
-                  <span className="text-xs font-semibold text-white leading-tight">{s.title}</span>
-                  <span className="text-xs text-purple-300 leading-tight">{s.desc}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>
