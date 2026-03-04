@@ -99,6 +99,11 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 .orbit-ring-cw  { animation: orbit-ring         3.5s linear infinite; }
 .orbit-ring-ccw { animation: orbit-ring-reverse  5s   linear infinite; }
 .float-blob     { animation: float-blob          6s   ease-in-out infinite; }
