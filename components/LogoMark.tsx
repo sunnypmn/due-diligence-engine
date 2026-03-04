@@ -16,33 +16,66 @@ export default function LogoMark({ size = 32, className = "" }: LogoMarkProps) {
     >
       <defs>
         <linearGradient id={`${id}-bg`} x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#a855f7" />
-          <stop offset="100%" stopColor="#6d28d9" />
+          <stop offset="0%" stopColor="#b06af0" />
+          <stop offset="100%" stopColor="#5b21b6" />
         </linearGradient>
-        <linearGradient id={`${id}-stroke`} x1="4" y1="24" x2="28" y2="6" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.7" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
+        <linearGradient id={`${id}-stroke`} x1="5" y1="7" x2="27" y2="7" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stopColor="#ffffff" stopOpacity="0.75" />
+          <stop offset="50%"  stopColor="#ffffff" stopOpacity="1" />
+          <stop offset="100%" stopColor="#e9d5ff" stopOpacity="0.9" />
         </linearGradient>
-        <filter id={`${id}-glow`}>
-          <feGaussianBlur stdDeviation="1.5" result="blur" />
-          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        <filter id={`${id}-glow`} x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="1.2" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id={`${id}-dotglow`} x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur stdDeviation="1.8" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
       </defs>
 
-      {/* Rounded square background */}
+      {/* Background */}
       <rect width="32" height="32" rx="9" fill={`url(#${id}-bg)`} />
 
-      {/* V shape with checkmark style — right arm rises higher than left */}
-      <g filter={`url(#${id}-glow)`}>
-        <polyline
-          points="5,8 14,24 27,6"
-          stroke={`url(#${id}-stroke)`}
-          strokeWidth="3.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
-      </g>
+      {/* Subtle inner highlight at top */}
+      <rect width="32" height="16" rx="9" fill="white" fillOpacity="0.06" />
+
+      {/* Wide glow pass */}
+      <path
+        d="M 5,7 Q 10,18 14.5,24.5 Q 19,18 27,6"
+        stroke="white"
+        strokeOpacity="0.18"
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+
+      {/* Main V with curved arms */}
+      <path
+        d="M 5,7 Q 10,18 14.5,24.5 Q 19,18 27,6"
+        stroke={`url(#${id}-stroke)`}
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+        filter={`url(#${id}-glow)`}
+      />
+
+      {/* Glowing dot at vertex */}
+      <circle
+        cx="14.5"
+        cy="24.5"
+        r="1.8"
+        fill="white"
+        filter={`url(#${id}-dotglow)`}
+      />
     </svg>
   );
 }
