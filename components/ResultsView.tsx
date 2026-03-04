@@ -88,7 +88,7 @@ export default function ResultsView({
         )}
 
         {/* 2. Upsell — right after score, before user digs into details */}
-        {!isStreaming && score && (
+        {score && (
           <BusinessPlanUpsell input={input} score={score} />
         )}
 
@@ -131,7 +131,7 @@ export default function ResultsView({
       </div>
 
       {/* Sticky bar — always visible while scrolling */}
-      {!isStreaming && score && (
+      {score && (
         <StickyUpsellBar input={input} score={score} />
       )}
     </>
