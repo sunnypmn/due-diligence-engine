@@ -1,0 +1,32 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#b06af0"/>
+      <stop offset="100%" stop-color="#5b21b6"/>
+    </linearGradient>
+    <linearGradient id="stroke" x1="5" y1="7" x2="27" y2="7" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.8"/>
+      <stop offset="50%"  stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#e9d5ff" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="9" fill="url(#bg)"/>
+
+  <!-- Subtle top highlight -->
+  <rect width="32" height="16" rx="9" fill="white" fill-opacity="0.07"/>
+
+  <!-- Wide glow pass -->
+  <path d="M 5,7 Q 10,18 14.5,24.5 Q 19,18 27,6"
+    stroke="white" stroke-opacity="0.2" stroke-width="6"
+    stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- V mark -->
+  <path d="M 5,7 Q 10,18 14.5,24.5 Q 19,18 27,6"
+    stroke="url(#stroke)" stroke-width="3.2"
+    stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Glowing dot at vertex -->
+  <circle cx="14.5" cy="24.5" r="2" fill="white" opacity="0.95"/>
+</svg>
